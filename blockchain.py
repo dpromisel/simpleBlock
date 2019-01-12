@@ -20,23 +20,22 @@ class Transaction:
 		return toString;
 
 class Block:
-	def __init__(self, index, timestamp, data, prev_block=None):
+	def __init__(self, index, data, previous_hash):
 
 		self.index = index
-		self.timestamp = timestamp
-		self.prev_block = prev_block
-		self.previous_hash = prev_block.compute_hash() if prev_block is not None else 0
+		self.timestamp = time()
+		self.previous_hash = previous_hash
 		self.data = data
 		self.nonce = 0
 
 	def compute_hash(self):
 		sha = hasher.sha256()
 
-		sha.update(str(self.index));
-		sha.update(str(self.timestamp));
-		sha.update(str(self.previous_hash));
-		sha.update(str(self.data));
-		sha.update(str(self.nonce));
+		sha.update(str(self.index) + 
+			str(self.timestamp) + 
+			str(self.previous_hash) + 
+			str(self.data) + 
+			str(self.nonce));
 
 		return sha.hexdigest()
 
@@ -62,8 +61,7 @@ class Blockchain:
 		The genesis block has index 0, previous_has of 0, and a valid hash
 		"""
 
-		genesis_block = Block(index=0, timestamp=time(), data=[]);
-
+		genesis_block = Block(index=0, data=[], previous_hash=0);
 		self.chain.append(genesis_block);
 
 	def new_transaction(self, sender, recipient, value):
@@ -80,8 +78,7 @@ class Blockchain:
 		last_block = self.last_block
 		new_block = Block(index=last_block.index + 1,
 						data=self.unconfirmed_transactions,
-						timestamp=time(),
-						prev_block=last_block)
+						previous_hash=last_block.compute_hash())
 		proof = self.proof_of_work(new_block)
 		self.add_block(new_block)
 		self.unconfirmed_transactions = []
