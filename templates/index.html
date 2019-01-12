@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Blockchain Frontend</title>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+  </head>
+
+  <body>
+
+    <form action="/new_transaction" id="textform" method="post">
+      <input type="text" name="sender" placeholder="Sender"></input>
+      <input type="text" name="recipient" placeholder="Recipient"></input>
+      <input type="number" name="value" placeholder="Value"></input>
+      <input type="submit"></input>
+    </form>
+
+    <button id="mine_button">Mine</button>
+
+    <!-- Unmined Transactions Table -->
+    <div class="container">
+      <table id="unmined_transactions_table" cellspacing="0" width="50%">
+        <tr><th>Sender</th><th>Recipient</th><th>Value</th></tr>'
+      </table>
+    </div>
+
+  </body>
+
+  <script type="text/javascript">
+    $.ajax({
+          url: "/pending_tx",
+          type: 'GET',
+          success: function(response){
+            transactions = response["transactions"]
+              for (let i = 0; i < transactions.length; i++) {
+                let val = transactions[i]["value"]
+                let sender = transactions[i]["sender"]
+                let recipient = transactions[i]["recipient"]
+
+                $('#unmined_transactions_table').append('<tr><td>' + sender + '</td><td> ' + recipient +'</td><td> ' + val +'</td></tr>');
+              }
+          },
+          error: function(error){
+            console.log(error);
+          }
+        });
+
+    $("#mine_button").click(function () {
+
+          $.ajax({
+            url: "/mine",
+            type: "GET",
+            success: function(response){
+              window.location.reload();
+            },
+            error: function(error){
+              console.log(error);
+            }
+          });
+
+        });
+  </script>
+
+</html>
