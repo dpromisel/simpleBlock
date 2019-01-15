@@ -31,8 +31,42 @@ def get_pending_tx():
 @app.route('/mine', methods=['GET'])
 def mine_unconfirmed_transactions():
 	result = blockchain.mine()
-	if not result:
-		return "No transactions to mine"
-	return "Block #{} is mined.".format(result)
+	response = {'block': result.__dict__}
+
+	return jsonify(response), 200
+
+@app.route('/chain', methods=['GET'])
+def get_chain():
+	chain_data = []
+	for block in blockchain.chain:
+		chain_data.append(block.__dict__)
+
+	response = {'chain': chain_data}
+	return jsonify(response), 200
+
+@app.route('/get_block', methods=['POST'])
+def get_block():
+	index = int(request.form["block_index"])
+	block = blockchain.chain[index]
+
+	response = {'block': block.__dict__}
+
+	return jsonify(response), 200
+
+@app.route('/reset')
+def reset():
+	global blockchain
+	
+	blockchain = Blockchain()
+
+	return redirect('/')
+
+@app.route('/integrity', methods=['GET'])
+def integrityn():
+	integrity = blockchain.check_integrity();
+
+	response = {'integrity': integrity}
+
+	return jsonify(response), 200
 
 app.run(debug=True, port=8000)

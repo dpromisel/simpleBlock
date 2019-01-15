@@ -1,4 +1,5 @@
 from time import time
+import datetime
 import hashlib as hasher
 
 class Transaction:
@@ -27,6 +28,7 @@ class Block:
 		self.previous_hash = previous_hash
 		self.data = data
 		self.nonce = 0
+		self.time_string = timestamp_to_string(self.timestamp);
 
 	def compute_hash(self):
 		sha = hasher.sha256()
@@ -48,7 +50,7 @@ class Block:
 class Blockchain:
 	def __init__(self):
 		#difficulty of PoW algorithm
-		self.difficulty = 2
+		self.difficulty = 4
 
 		self.unconfirmed_transactions = []
 		self.chain = []
@@ -62,6 +64,7 @@ class Blockchain:
 		"""
 
 		genesis_block = Block(index=0, data=[], previous_hash=0);
+		proof = self.proof_of_work(genesis_block)
 		self.chain.append(genesis_block);
 
 	def new_transaction(self, sender, recipient, value):
@@ -115,7 +118,7 @@ class Blockchain:
 		previous_hash = 0;
 		index = 0;
 
-		for block in chain:
+		for block in self.chain:
 			if block.index != index:
 				return False
 			if block.previous_hash != previous_hash:
@@ -130,4 +133,7 @@ class Blockchain:
 	@property
 	def last_block(self):
 		return self.chain[-1]
+
+def timestamp_to_string(epoch_time):
+	return datetime.datetime.fromtimestamp(epoch_time).strftime('%H:%M')
 
