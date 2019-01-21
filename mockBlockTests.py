@@ -34,9 +34,28 @@ class TestMockBlock(unittest.TestCase):
         assert comp_hash.startswith('0' * self.difficulty)
 
     def test_add_block(self):
-        boolean = add_block(new_block1)
+        boolean_true = add_block(new_block1)
+        off_chain_block = Block(index=22,data=[],previous_hash=-99)
+        boolean_false = add_block(off_chain_block)
         self.assertEqual(new_block1,chain[-1])
-        self.assertEqual(boolean,True)
+        self.assertEqual(boolean_true,True)
+        self.assertEqual(boolean_false,False)
+
+    def my_check_integrity(self):
+        previous_hash = 0;
+        index = 0;
+        for block in self.chain:
+            if block.index != index:
+                return False
+            if block.previous_hash != previous_hash:
+				return False;
+
+            previous_hash = block.compute_hash();
+		    index = index + 1;
+        return True;
+
+    def test_check_integrity(self):
+        self.assertEqual(self.check_integrity,self.my_check_integrity)
 
     def tearDown(self):
         self.genesis_block.dispose()
