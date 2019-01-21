@@ -22,15 +22,21 @@ class Transaction:
 
 class Block:
 	def __init__(self, index, data, previous_hash):
-		#TODO: Block initializer
+
+		self.index = index
+		self.timestamp = time()
+		self.previous_hash = previous_hash
+		self.data = data
+		self.nonce = 0
+		self.time_string = timestamp_to_string(self.timestamp);
 
 	def compute_hash(self):
 		sha = hasher.sha256()
 
-		sha.update(str(self.index) +
-			str(self.timestamp) +
-			str(self.previous_hash) +
-			str(self.data) +
+		sha.update(str(self.index) + 
+			str(self.timestamp) + 
+			str(self.previous_hash) + 
+			str(self.data) + 
 			str(self.nonce));
 
 		return sha.hexdigest()
@@ -43,7 +49,13 @@ class Block:
 
 class Blockchain:
 	def __init__(self):
-		#TODO: implement Blockchain class initializer
+		#difficulty of PoW algorithm
+		self.difficulty = 4
+
+		self.unconfirmed_transactions = []
+		self.chain = []
+
+		self.create_genesis_block();
 
 	def create_genesis_block(self):
 		"""
@@ -51,11 +63,14 @@ class Blockchain:
 		The genesis block has index 0, previous_has of 0, and a valid hash
 		"""
 
-		#TODO: implement creating a new genesis block
+		genesis_block = Block(index=0, data=[], previous_hash=0);
+		proof = self.proof_of_work(genesis_block)
+		self.chain.append(genesis_block);
 
 	def new_transaction(self, sender, recipient, value):
-		#TODO: implement adding new transactions
-		return 0;
+		new_tx = Transaction(sender, recipient, value).toDict();
+		self.unconfirmed_transactions.append(new_tx);
+		return new_tx;
 
 	def mine(self):
 		"""
@@ -63,23 +78,36 @@ class Blockchain:
 		transactions to the blockchain by adding them to the block
 		and figuring out Proof of Work.
 		"""
-		#TODO: implement mining
-		return 0
+		last_block = self.last_block
+		new_block = Block(index=last_block.index + 1,
+						data=self.unconfirmed_transactions,
+						previous_hash=last_block.compute_hash())
+		proof = self.proof_of_work(new_block)
+		self.add_block(new_block)
+		self.unconfirmed_transactions = []
+		return new_block
 
 	def proof_of_work(self, block):
 		"""
 		Function that tries different values of nonce to get a hash
 		that satisfies our difficulty criteria.
 		"""
-		#TODO: implement proof of work
-		return 0;
+		computed_hash = block.compute_hash()
+		while not computed_hash.startswith('0' * self.difficulty):
+			block.nonce += 1
+			computed_hash = block.compute_hash()
+		return computed_hash;
 
 	def add_block(self, block):
 		"""
 		A function that adds the block to the chain after verification.
 		"""
-		#TODO: implement adding a block to a chain
-		return 0
+		last_block = self.last_block
+		previous_hash = last_block.compute_hash()
+		if previous_hash != block.previous_hash:
+			return False
+		self.chain.append(block)
+		return True
 
 	def check_integrity(self):
 		"""
@@ -108,3 +136,4 @@ class Blockchain:
 
 def timestamp_to_string(epoch_time):
 	return datetime.datetime.fromtimestamp(epoch_time).strftime('%H:%M')
+
