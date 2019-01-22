@@ -1,0 +1,123 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{fancyhdr}
+\usepackage{times}
+\usepackage{textcomp}
+\usepackage{imakeidx}
+
+
+\pagestyle{fancy}
+\lhead{CSCI1951L}
+\chead{Blockchains and Cryptocurrencies}
+\rhead{Herlihy}
+\setlength\parindent{0pt}
+
+\begin{document}
+
+\begin{center}
+    \Large\textbf{MockBlock}
+    \large\textit{Due: February 2019}
+\end{center}
+
+\tableofcontents
+
+\section{Introduction}
+
+\section{Set Up}
+
+You will be implementing a simple blockchain in Python. To get started, run \par \vspace{5mm} 
+
+\hspace*{6mm} cs1951L\textunderscore install mockblock \par \vspace{5mm}
+
+to copy the stencil for this project into \textbf{/course/cs1951L/mockblock}.
+
+\section{Stencil}
+\subsection{blockchain.py}
+You have been provided with the following stencil file: \par \vspace{5mm} 
+
+\textbf{blockchain.py} - contains the \textbf{Blockchain} and \textbf{Block} classes with function definitions that you will need to implement \par \vspace{5mm}
+
+\subsection{network.py}
+You are also provided with the file \textbf{network.py} which will run your implementation of mockBlock and provide you with an interface to test your blockchain. To use the provided interface, you will need to install flask through the following commands: \par \vspace{5mm}
+
+\hspace*{6mm} virtualenv flask \par \vspace{5mm}
+
+\hspace*{6mm} source flask/bin/activate \par \vspace{5mm}
+
+\hspace*{6mm} pip install flask \par \vspace{5mm}
+
+You should see (flask) on the right of your command line once it is activated. To run the program, use the following command: \par \vspace{5mm}
+
+\hspace*{6mm} python network.py \par \vspace{5mm}
+and open it in your browser with the url \textbf{http://127.0.0.1:8000/}\par \vspace{5mm}
+
+For subsequent attempts to run the program, you will only need to use the commands:
+\par \vspace{5mm}
+
+\hspace*{6mm} source flask/bin/activate \par \vspace{5mm}
+\hspace*{6mm} python network.py \par
+\section{Assignment}
+
+You will be implementing the functions inside of \textbf{blockchain.py}. These functions are within two classes in the file.
+
+\subsection{Block}
+
+\textbf{def \_\_init\_\_(self, index, data, previous\_hash):} \par 
+A block is an object containing transaction information on the blockchain. Your implementation of the block must store the following parameters:
+\begin{itemize}
+  \item An index starting at 0 and incrementing for each new block
+  \item A timestamp using the time() function. This timestamp must be stored as a String to work with the provided interface. This can be done using the provided timestamp\_to\_string method.
+  \item The hash of the previous block
+  \item The transaction data
+  \item The nonce for proof of work calculations
+\end{itemize}
+
+\subsection{Blockchain}
+\textbf{def \_\_init\_\_(self):} \par
+The blockchain is the network of blocks containing all the transaction history. Your implementation of the blockchain must include the following parameters:
+\begin{itemize}
+  \item A value representing the number of leading zero bytes the hash will produce given the nonce of the block. This should be initialized as 4.
+  \item A list of transactions that haven't been added to a block yet
+  \item A list of all the blocks
+\end{itemize}
+Upon initialization, the blockchain should also mine the genesis block, the first block of the blockchain.\vspace{5mm}
+
+\textbf{def create\_genesis\_block(self):}\par
+The genesis block is the first block of your blockchain. The block should be initialized with an index of 0 and a previous hash of 0 and contains no data. Make sure to perform proof of work and that the block is added to the blockchain.
+\vspace{5mm}
+
+
+\textbf{def new\_transaction(self, sender, recipient, value):}\par
+
+Create a new transaction and add it to the list of unconfirmed transactions as a dictionary. The transaction should contain information on who the sender and recipient of the transaction is and the value of the transaction. The function should return the new transaction object
+\vspace{5mm}
+
+\textbf{def mine(self):}\par
+Mining is the process of adding new blocks to the blockchain by confirming transactions. Our blockchain will use proof of work to confirm each transaction. \par \vspace{5mm}
+Your function should create a new block, perform proof of work on the new block, and then add the newly confirmed block to the blockchain. The function should return the new block.
+\vspace{5mm}
+
+\textbf{proof\_of\_work(self, block):}\par
+Proof of work checks that a node has performed the necessary calculations to confirm a block by brute forcing the solution to a particular output of an encrypted hash function. We have provided the code to generate a hash, which uses the SHA256 protocol.\par
+\vspace{5mm}
+
+To perform proof of work, you have to first produce a hash for the given block. You must then verify that the hash produced using the current nonce of the block has the correct amount of leading zeroes, which for this assignment we have specified as 4. For each degree of difficulty, the average time to perform a proof of work doubles.\par
+\vspace{5mm}
+The function should return the desired hash.
+
+\vspace{5mm}
+
+
+\textbf{def add\_block(self, block):}\par 
+This function will add the given block to the blockchain. Before doing so, you should verify that the hash of the block before the given block is equal to the hash of the last block in the blockchain. If the hashes are not equal, the function should return false. Otherwise, upon successful execution, the function should return true.
+\subsection{Transactions}
+You are also given an already implemented Transactions class. This class should be used when new transactions are created.
+\section{Grading}
+\section{Handing In}
+To hand in the project, run \par \vspace{5mm} 
+
+\hspace*{6mm} cs1951L\textunderscore handin mockBlock mockBlock \par \vspace{5mm}
+
+\end{document}
