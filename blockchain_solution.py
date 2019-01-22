@@ -123,6 +123,8 @@ class Blockchain:
 				return False
 			if block.previous_hash != previous_hash:
 				return False;
+			if not block.startswith('0' * self.difficulty):
+				return False
 
 			previous_hash = block.compute_hash();
 			index = index + 1;
