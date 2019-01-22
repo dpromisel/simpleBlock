@@ -33,10 +33,10 @@ class Block:
 	def compute_hash(self):
 		sha = hasher.sha256()
 
-		sha.update(str(self.index) + 
-			str(self.timestamp) + 
-			str(self.previous_hash) + 
-			str(self.data) + 
+		sha.update(str(self.index) +
+			str(self.timestamp) +
+			str(self.previous_hash) +
+			str(self.data) +
 			str(self.nonce));
 
 		return sha.hexdigest()
@@ -136,4 +136,3 @@ class Blockchain:
 
 def timestamp_to_string(epoch_time):
 	return datetime.datetime.fromtimestamp(epoch_time).strftime('%H:%M')
-
