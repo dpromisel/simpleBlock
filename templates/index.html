@@ -135,7 +135,6 @@
       type: 'GET',
       success: function(response){
         let chain = response["chain"];
-        console.log(response)
 
         let dataSet = []
 
@@ -149,7 +148,6 @@
 
           let data = [index, transactions.length, prev_hash, nonce, time];
 
-          console.log(data);
 
           dataSet.push(data);
 
@@ -179,8 +177,6 @@
 
 
     $("#block_select").change(function () {
-
-      console.log("changed")
 
       $.ajax({
         url: "/get_block",

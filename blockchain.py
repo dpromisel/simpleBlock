@@ -37,12 +37,16 @@ class Block:
 		self.previous_hash
 		self.data
 		self.nonce
-		self.time_string
+		self.time_string = timestamp_to_string();
 
 	def compute_hash(self):
 		#TODO Implement hashing
 
 		return 0
+
+	""" Function to convert a timestamp to a string"""
+	def timestamp_to_string():
+		return datetime.datetime.fromtimestamp(self.timestamp).strftime('%H:%M')
 
 	def __str__(self):
 		toString =  str(self.index) + "\t" + str(self.timestamp) +"\t\t" + str(self.previous_hash) + "\n"
@@ -93,7 +97,3 @@ class Blockchain:
 	@property
 	def last_block(self):
 		return self.chain[-1]
-
-""" Function to convert a timestamp to a string"""
-def timestamp_to_string(epoch_time):
-	return datetime.datetime.fromtimestamp(epoch_time).strftime('%H:%M')

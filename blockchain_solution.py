@@ -28,7 +28,7 @@ class Block:
 		self.previous_hash = previous_hash
 		self.data = data
 		self.nonce = 0
-		self.time_string = timestamp_to_string(self.timestamp);
+		self.time_string = self.timestamp_to_string();
 
 	def compute_hash(self):
 		sha = hasher.sha256()
@@ -40,6 +40,10 @@ class Block:
 			str(self.nonce));
 
 		return sha.hexdigest()
+
+	""" Function to convert a timestamp to a string"""
+	def timestamp_to_string(self):
+		return datetime.datetime.fromtimestamp(self.timestamp).strftime('%H:%M')
 
 	def __str__(self):
 		toString =  str(self.index) + "\t" + str(self.timestamp) +"\t\t" + str(self.previous_hash) + "\n"
@@ -123,7 +127,7 @@ class Blockchain:
 				return False
 			if block.previous_hash != previous_hash:
 				return False;
-			if not block.startswith('0' * self.difficulty):
+			if not block.compute_hash().startswith('0' * self.difficulty):
 				return False
 
 			previous_hash = block.compute_hash();
@@ -136,5 +140,3 @@ class Blockchain:
 	def last_block(self):
 		return self.chain[-1]
 
-def timestamp_to_string(epoch_time):
-	return datetime.datetime.fromtimestamp(epoch_time).strftime('%H:%M')
